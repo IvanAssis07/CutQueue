@@ -29,12 +29,12 @@ model Barbershop {
   address       String
   owner         User            @relation(fields: [ownerId], references: [id])
   ownerId       String          @unique
-  openningHours OpenningHours?
+  openingHours  OpeningHours?
   appointments  Appointment[]
   services      Service[]
 }
 
-model OpenningHours {
+model OpeningHours {
   id            String        @id @default(uuid())
   workDays      Int
   openingTime   DateTime
