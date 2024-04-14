@@ -1,5 +1,9 @@
 import { app } from "./config/expressConfig";
+import { getEnv } from './utils/functions/getEnv';
 
-app.listen(process.env.PORT, () => {
-    console.log(`Server running at port ${process.env.PORT}`);
+const port = getEnv('PORT');
+
+
+app.listen(port, () => {
+    console.log(`Server running at port ${port}`);
 })

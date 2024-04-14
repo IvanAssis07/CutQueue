@@ -1,23 +1,82 @@
 import {Request, Response, Router, NextFunction} from 'express';
 import { userService } from '../service/userService';
-import { User } from '@prisma/client';
 import { statusCodes } from '../../../../utils/constants/statusCodes';
+import { notLoggedIn, loginMiddleware, verifyJWT, checkRole } from '../../../middlewares/auth';
 
 export const router = Router();
 
-router.post('/', async(req: Request, res: Response, next: NextFunction) => {
-    try {
-        res.status(statusCodes.CREATED).json(await userService.create(req.body));
-    } catch (error) {
-        next(error);
-    }
-});
+router.post('/login', notLoggedIn, loginMiddleware);
 
-router.get('/', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const users = await userService.get();
-        res.status(statusCodes.ACCEPTED).json(users);
-    } catch (error) {
-        next(error);
+router.post(
+    '/logout', 
+    verifyJWT, 
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            res.clearCookie('jwt').status(statusCodes.NO_CONTENT).end();
+        } catch (error) {
+            next(error);
+        }
     }
-});
+);
+
+router.post('/', 
+    async(req: Request, res: Response, next: NextFunction) => {
+        try {
+            res.status(statusCodes.CREATED).json(await userService.create(req.body));
+        } catch (error) {
+            next(error);
+        }
+    }
+);
+
+router.get('/', 
+    verifyJWT,
+    checkRole(['admin']),
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const users = await userService.get();
+            res.status(statusCodes.ACCEPTED).json(users);
+        } catch (error) {
+            next(error);
+        }   
+    }
+);
+
+router.get(
+    '/profile',
+    verifyJWT, 
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const users = await userService.getProfile(req.user.id);
+            res.status(statusCodes.SUCCESS).json(users);
+        } catch (error) {
+            next(error);
+        }
+    }
+);
+
+router.put(
+    '/:id',
+    verifyJWT,
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const users = await userService.update(req.body, req.params.id, req.user.id);
+            res.status(statusCodes.NO_CONTENT).end();
+        } catch (error) {
+            next(error);
+        }
+    }
+);
+
+router.delete(
+    '/:id',
+    verifyJWT,
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const users = await userService.delete(req.params.id, req.user.id, req.user.role);
+            res.status(statusCodes.NO_CONTENT).end();
+        } catch (error) {
+            next(error);
+        }
+    }
+)
