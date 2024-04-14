@@ -16,3 +16,6 @@ app.use(express.json());
 
 import { router as userRouter } from '../src/domains/user/controller';
 app.use('/api/users', userRouter);
+
+import { router as barberShopRouter } from '../src/domains/barbershop/controller';
+app.use('/api/barbershops', barberShopRouter);

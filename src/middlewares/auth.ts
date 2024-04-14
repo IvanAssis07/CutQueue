@@ -61,7 +61,7 @@ export async function loginMiddleware(req: Request, res: Response, next: NextFun
 
         generateJWT(user, res);
       
-        res.status(statusCodes.SUCCESS).json('Usuário logado com sucesso!');
+        res.status(statusCodes.SUCCESS).json({id: user.id});
     } catch (error) {
       next(error);
     }

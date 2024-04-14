@@ -1,4 +1,4 @@
-import {Request, Response, Router, NextFunction} from 'express';
+import { Request, Response, Router, NextFunction } from 'express';
 import { userService } from '../service/userService';
 import { statusCodes } from '../../../../utils/constants/statusCodes';
 import { notLoggedIn, loginMiddleware, verifyJWT, checkRole } from '../../../middlewares/auth';
@@ -46,11 +46,11 @@ router.get(
 );
 
 router.get(
-    '/profile',
+    '/:id',
     verifyJWT, 
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const users = await userService.getProfile(req.user.id);
+            const users = await userService.getProfile(req.params.id);
             res.status(statusCodes.SUCCESS).json(users);
         } catch (error) {
             next(error);
