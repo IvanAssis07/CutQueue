@@ -21,8 +21,18 @@ class BarbershopService {
             throw new InvalidParamError(`Usuário com id:${data.ownerId} não encontrado.`);
         }
 
-        if (owner.role === roles.OWNER) {
-            throw new ConflictError('Um usuário só pode ser dono de uma barbearia.');
+        if (owner.role !== roles.OWNER) {
+            throw new ConflictError('Este tipo de usuário não pode cadastrar barbearia.');
+        }
+
+        const barbershop = await Prisma.barbershop.findUnique({
+            where: {
+                ownerId: data.ownerId
+            }
+        });
+
+        if (barbershop) {
+            throw new ConflictError('Este usuário já possui uma barbearia cadastrada.');
         }
 
         await Prisma.barbershop.create({
@@ -35,15 +45,6 @@ class BarbershopService {
             },
             select: {
                 id: true
-            }
-        });
-
-        await Prisma.user.update({
-            where: {
-                id: data.ownerId
-            },
-            data: {
-                role: roles.OWNER
             }
         });
     }
@@ -113,7 +114,7 @@ class BarbershopService {
         });
     }
 
-    async delete(barbershopId: string, loggedUserId: string) {
+    async delete(barbershopId: string, loggedUserId: string, loggedUserRole: string) {
         const barbershop = await Prisma.barbershop.findUnique({
             where: {
                 id: barbershopId
@@ -124,7 +125,7 @@ class BarbershopService {
             throw new InvalidParamError(`Barbearia com id:${barbershopId} não encontrada.`);
         }
 
-        if (barbershop.ownerId !== loggedUserId) {
+        if (loggedUserRole !== roles.ADMIN && barbershop.ownerId !== loggedUserId) {
             throw new PermissionError('Você não tem permissão para deletar essa barbearia.');
         }
 
@@ -133,16 +134,7 @@ class BarbershopService {
                 id: barbershopId
             }
         });
-
-        await Prisma.user.update({
-            where: {
-                id: loggedUserId
-            },
-            data: {
-                role: roles.CLIENT
-            }
-        });
     }
 }
 
-export const barverShopService = new BarbershopService;
+export const barberShopService = new BarbershopService;

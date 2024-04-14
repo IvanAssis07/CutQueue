@@ -22,6 +22,7 @@ router.post(
 
 router.post(
     '/', 
+    notLoggedIn,
     async(req: Request, res: Response, next: NextFunction) => {
         try {
             res.status(statusCodes.CREATED).json(await userService.create(req.body));

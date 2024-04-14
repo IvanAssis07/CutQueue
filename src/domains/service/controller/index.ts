@@ -1,7 +1,7 @@
 import { Request, Response, Router, NextFunction } from 'express';
+import { serviceService } from "../service/serviceService";
 import { checkRole, verifyJWT } from '../../../middlewares/auth';
-import { statusCodes } from '../../../../utils/constants/statusCodes';
-import { barberShopService } from '../service/barberShopService';
+import { statusCodes } from "../../../../utils/constants/statusCodes";
 import { roles } from '../../../../utils/constants/roles';
 
 export const router = Router();
@@ -12,7 +12,7 @@ router.post(
     checkRole([roles.OWNER]),
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            res.status(statusCodes.CREATED).json(await barberShopService.create(req.body, req.user.id));
+            res.status(statusCodes.CREATED).json(await serviceService.create(req.body, req.user.id));
         } catch (error) {
             next(error);
         }
@@ -20,11 +20,11 @@ router.post(
 )
 
 router.get(
-    '/',
+    '/servicesFromBarbershop/:barbershopId', // TODO: pensar num nome melhor para a rota
     verifyJWT,
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            res.status(statusCodes.SUCCESS).json(await barberShopService.getAll());
+            res.status(statusCodes.SUCCESS).json(await serviceService.getAllServicesFromBarbershop(req.params.barbershopId));
         } catch (error) {
             next(error);
         }
@@ -36,7 +36,7 @@ router.get(
     verifyJWT,
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            res.status(statusCodes.SUCCESS).json(await barberShopService.getById(req.params.id));
+            res.status(statusCodes.SUCCESS).json(await serviceService.getServiceById(req.params.id));
         } catch (error) {
             next(error);
         }
@@ -49,7 +49,7 @@ router.put(
     checkRole([roles.OWNER]),
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            res.status(statusCodes.NO_CONTENT).json(await barberShopService.update(req.body, req.params.id, req.user.id));
+            res.status(statusCodes.SUCCESS).json(await serviceService.updateService(req.body, req.params.id, req.user.id));
         } catch (error) {
             next(error);
         }
@@ -59,10 +59,11 @@ router.put(
 router.delete(
     '/:id',
     verifyJWT,
-    checkRole([roles.OWNER, roles.ADMIN]),
+    checkRole([roles.OWNER]),
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            res.status(statusCodes.NO_CONTENT).json(await barberShopService.delete(req.params.id, req.user.id, req.user.role));
+            await serviceService.delete(req.params.id, req.user.id);
+            res.status(statusCodes.NO_CONTENT).send();
         } catch (error) {
             next(error);
         }

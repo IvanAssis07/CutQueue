@@ -19,3 +19,6 @@ app.use('/api/users', userRouter);
 
 import { router as barberShopRouter } from '../src/domains/barbershop/controller';
 app.use('/api/barbershops', barberShopRouter);
+
+import { router as serviceRouter } from '../src/domains/service/controller';
+app.use('/api/services', serviceRouter)

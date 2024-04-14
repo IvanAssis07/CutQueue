@@ -9,7 +9,7 @@ import { NotAuthorizedError } from '../../errors/NotAuthorizedError';
 import { statusCodes } from '../../utils/constants/statusCodes';
 import { ConflictError } from '../../errors/ConflictError';
 
-function generateJWT(user: Omit<User, 'name' | 'email' | 'password' | 'phone'>, res: Response) {
+export function generateJWT(user: Omit<User, 'name' | 'email' | 'password' | 'phone'>, res: Response) {
     const body = {
         id: user.id,
         role: user.role
@@ -106,6 +106,7 @@ export function verifyJWT(req: Request, res: Response, next: NextFunction) {
 
 export const checkRole = (roles: string[]) => {
     return (req: Request, res: Response, next: NextFunction) => {
+
         try {
             ! roles.includes(req.user!.role) ? res.status(statusCodes.UNAUTHORIZED).json('Você não possui permissão para realizar essa ação') : next();
         } catch(error){
