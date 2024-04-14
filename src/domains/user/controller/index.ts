@@ -2,6 +2,7 @@ import {Request, Response, Router, NextFunction} from 'express';
 import { userService } from '../service/userService';
 import { statusCodes } from '../../../../utils/constants/statusCodes';
 import { notLoggedIn, loginMiddleware, verifyJWT, checkRole } from '../../../middlewares/auth';
+import { roles } from '../../../../utils/constants/roles';
 
 export const router = Router();
 
@@ -19,7 +20,8 @@ router.post(
     }
 );
 
-router.post('/', 
+router.post(
+    '/', 
     async(req: Request, res: Response, next: NextFunction) => {
         try {
             res.status(statusCodes.CREATED).json(await userService.create(req.body));
@@ -29,9 +31,10 @@ router.post('/',
     }
 );
 
-router.get('/', 
+router.get(
+    '/', 
     verifyJWT,
-    checkRole(['admin']),
+    checkRole([roles.ADMIN]),
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const users = await userService.get();

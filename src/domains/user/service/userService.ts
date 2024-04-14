@@ -5,6 +5,7 @@ import { ConflictError } from '../../../../errors/ConflictError';
 import { getEnv } from '../../../../utils/functions/getEnv';
 import bcrypt from "bcrypt";
 import { PermissionError } from '../../../../errors/PermissionError';
+import { roles } from '../../../../utils/constants/roles';
 
 class UserService {
     async create(data: Omit<User, 'id'>) {
@@ -27,6 +28,9 @@ class UserService {
                 password: hashedPassword,
                 phone: data.phone,
                 role: data.role
+            },
+            select: {
+                id: true
             }
         });
     }
@@ -37,7 +41,6 @@ class UserService {
                 id: true,
                 name: true,
                 email: true,
-                password: false,
                 role: true,
                 phone: true
             }
@@ -48,6 +51,13 @@ class UserService {
         return Prisma.user.findUniqueOrThrow({
             where: {
                 id: id
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                phone: true
             }
         }).catch(() => { throw new InvalidParamError(`Usuário ${id} não encontrado.`) });
     }
@@ -94,10 +104,8 @@ class UserService {
         if (!user) {
             throw new InvalidParamError(`Usuário com id:${userId} não encontrado.`);
         }
-        console.log(userId)
-        console.log(loggedUserId)
-        console.log(loggedUserRole)
-        if (loggedUserRole !== 'admin' && user.id !== loggedUserId) {
+
+        if (loggedUserRole !== roles.ADMIN && user.id !== loggedUserId) {
             throw new PermissionError('Você não tem permissão para executar esta ação.')
         } 
 
