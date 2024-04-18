@@ -49,6 +49,14 @@ class BarbershopService {
         });
     }
 
+    async getBarbershopFromOwnerId (ownerId: string) {
+        return await Prisma.barbershop.findFirstOrThrow({
+            where: {
+                ownerId: ownerId
+            }
+        }).catch(() => { throw new InvalidParamError(`Barbearia com o dono ${ownerId} não encontrado.`) });
+    }
+
     async getAll() {
         return await Prisma.barbershop.findMany({
             select: {

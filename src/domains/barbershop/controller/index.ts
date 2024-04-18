@@ -32,11 +32,23 @@ router.get(
 )
 
 router.get(
-    '/:id',
+    '/id/:id',
     verifyJWT,
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             res.status(statusCodes.SUCCESS).json(await barberShopService.getById(req.params.id));
+        } catch (error) {
+            next(error);
+        }
+    }
+)
+
+router.get(
+    '/owner/:ownerId',
+    verifyJWT,
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            res.status(statusCodes.SUCCESS).json(await barberShopService.getBarbershopFromOwnerId(req.params.ownerId));
         } catch (error) {
             next(error);
         }
