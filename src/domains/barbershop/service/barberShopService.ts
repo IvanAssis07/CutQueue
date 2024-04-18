@@ -70,7 +70,7 @@ class BarbershopService {
     async getById(id: string) {
         const barbershop = await Prisma.barbershop.findUnique({
             where: {
-                id
+                id: id
             },
             select: {
                 id: true,
@@ -84,6 +84,8 @@ class BarbershopService {
         if (!barbershop) {
             throw new InvalidParamError(`Barbearia com id: ${id} não encontrada.`);
         }
+
+        return barbershop;
     }
 
     async update(data: Omit<Barbershop, 'id' | 'ownerId'>, barbershopId: string, loggedUserId: string) {
