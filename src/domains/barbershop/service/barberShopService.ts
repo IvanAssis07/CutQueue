@@ -8,7 +8,7 @@ import { ConflictError } from "../../../../errors/ConflictError";
 class BarbershopService {
     async create(data: Omit<Barbershop, 'id'>, loggedUserId: string) {
         if (loggedUserId !== data.ownerId) {
-            throw new PermissionError('Você não tem permissão para criar uma barbearia para outro usuário.');
+            throw new PermissionError('You do not have permission to create a barbershop for another user.');
         }
         
         const owner = await Prisma.user.findUnique({
@@ -18,11 +18,11 @@ class BarbershopService {
         });
 
         if (!owner) {
-            throw new InvalidParamError(`Usuário com id:${data.ownerId} não encontrado.`);
+            throw new InvalidParamError(`User with id:${data.ownerId} not found.`);
         }
 
         if (owner.role !== roles.OWNER) {
-            throw new ConflictError('Este tipo de usuário não pode cadastrar barbearia.');
+            throw new ConflictError('A user with this role can not create a barbershop.');
         }
 
         const barbershop = await Prisma.barbershop.findUnique({
@@ -32,7 +32,7 @@ class BarbershopService {
         });
 
         if (barbershop) {
-            throw new ConflictError('Este usuário já possui uma barbearia cadastrada.');
+            throw new ConflictError('This user already has a registered barbershop.');
         }
 
         await Prisma.barbershop.create({
@@ -54,7 +54,7 @@ class BarbershopService {
             where: {
                 ownerId: ownerId
             }
-        }).catch(() => { throw new InvalidParamError(`Barbearia com o dono ${ownerId} não encontrado.`) });
+        }).catch(() => { throw new InvalidParamError(`Barbershop with owner ${ownerId} not found.`) });
     }
 
     async getAll() {
@@ -90,7 +90,7 @@ class BarbershopService {
         });
 
         if (!barbershop) {
-            throw new InvalidParamError(`Barbearia com id: ${id} não encontrada.`);
+            throw new InvalidParamError(`Barbershop with: ${id} not found.`);
         }
 
         return barbershop;
@@ -104,11 +104,11 @@ class BarbershopService {
         });
 
         if (!barbershop) {
-            throw new InvalidParamError(`Barbearia com id:${barbershopId} não encontrada.`);
+            throw new InvalidParamError(`Barbershop with: ${barbershopId} not found.`);
         }
 
         if (barbershop.ownerId !== loggedUserId) {
-            throw new PermissionError('Você não tem permissão para editar essa barbearia.');
+            throw new PermissionError('You do no have permission to edit this barbershop.');
         }
 
         await Prisma.barbershop.update({
@@ -132,11 +132,11 @@ class BarbershopService {
         });
 
         if (!barbershop) {
-            throw new InvalidParamError(`Barbearia com id:${barbershopId} não encontrada.`);
+            throw new InvalidParamError(`Barbershop with id:${barbershopId} not found.`);
         }
 
         if (loggedUserRole !== roles.ADMIN && barbershop.ownerId !== loggedUserId) {
-            throw new PermissionError('Você não tem permissão para deletar essa barbearia.');
+            throw new PermissionError('You do not have permission to delete this barbershop.');
         }
 
         await Prisma.barbershop.delete({

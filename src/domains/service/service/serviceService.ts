@@ -14,11 +14,11 @@ class ServiceService {
         });
 
         if (!barbershop) {
-            throw new InvalidParamError(`Barbearia com id: ${data.barbershopId} não encontrada.`);
+            throw new InvalidParamError(`Barbershop with id: ${data.barbershopId} not found.`);
         }
 
         if (barbershop.ownerId !== ownerId) {
-            throw new PermissionError('Você não tem permissão para criar serviços nesta barbearia.');
+            throw new PermissionError('You do not have permission to create services for this barbershop.');
         }
 
         await Prisma.service.create({
@@ -43,7 +43,7 @@ class ServiceService {
         });
 
         if (!barbershop) {
-            throw new InvalidParamError(`Barbearia com id: ${barbershopId} não encontrada.`);
+            throw new InvalidParamError(`Barbershop with id: ${barbershopId} not found.`);
         }
         
         const services =  await Prisma.service.findMany({
@@ -77,7 +77,7 @@ class ServiceService {
         });
 
         if (!service) {
-            throw new InvalidParamError(`Serviço com id: ${serviceId} não encontrado.`);
+            throw new InvalidParamError(`Service with id: ${serviceId} not found.`);
         }
 
         return service;
@@ -99,15 +99,11 @@ class ServiceService {
         });
 
         if (!service) {
-            throw new InvalidParamError(`Serviço com id: ${serviceId} não encontrado.`);
-        }
-
-        if (!service.barbershop) {
-            throw new ConflictError(`Barbearia com não encontrada.`);
+            throw new InvalidParamError(`Service with id: ${serviceId} not found.`);
         }
 
         if (service.barbershop.ownerId !== loggedUserId) {
-            throw new PermissionError('Você não tem permissão para editar este serviço.');
+            throw new PermissionError('You do not have permission to edit this service.');
         }
 
         await Prisma.service.update({
@@ -139,15 +135,15 @@ class ServiceService {
         });
 
         if (!service) {
-            throw new InvalidParamError(`Serviço com id: ${serviceId} não encontrado.`);
+            throw new InvalidParamError(`Service with id: ${serviceId} not found.`);
         }
 
         if (!service.barbershop) {
-            throw new ConflictError(`Barbearia com não encontrada.`);
+            throw new ConflictError(`Barbershop not found.`);
         }
 
         if (service.barbershop.ownerId !== loggedUserId) {
-            throw new PermissionError('Você não tem permissão para deletar este serviço.');
+            throw new PermissionError('You do not have permission to edit this service.');
         }
 
         await Prisma.service.delete({

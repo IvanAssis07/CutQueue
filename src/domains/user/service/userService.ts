@@ -59,7 +59,7 @@ class UserService {
                 role: true,
                 phone: true
             }
-        }).catch(() => { throw new InvalidParamError(`Usuário ${id} não encontrado.`) });
+        }).catch(() => { throw new InvalidParamError(`User with ${id} not found.`) });
     }
 
     async update(data: Omit<User, 'role'| 'id'>, userId: string, loggedUserId: string) {
@@ -70,11 +70,11 @@ class UserService {
         });
     
         if (!user) {
-            throw new InvalidParamError(`Usuário com id:${userId} não encontrado.`);
+            throw new InvalidParamError(`User with ${userId} not found..`);
         }
 
         if (user.id !== loggedUserId) {
-            throw new PermissionError('Você não tem permissão para executar esta ação.')
+            throw new PermissionError('You do not have permission to perform this action.')
         } 
 
         if (data.password) {
@@ -102,11 +102,11 @@ class UserService {
         });
 
         if (!user) {
-            throw new InvalidParamError(`Usuário com id:${userId} não encontrado.`);
+            throw new InvalidParamError(`User with id:${userId} not found.`);
         }
 
         if (loggedUserRole !== roles.ADMIN && user.id !== loggedUserId) {
-            throw new PermissionError('Você não tem permissão para executar esta ação.')
+            throw new PermissionError('You do not have permission to perform this action.')
         } 
 
         await Prisma.user.delete({

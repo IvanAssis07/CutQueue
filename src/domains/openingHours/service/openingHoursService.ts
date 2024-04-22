@@ -9,11 +9,11 @@ import { hourFormatValidation } from "../../../../utils/functions/hourFormatVali
 class OpeningHoursService {
     async create(data: Omit<OpeningHours, 'id'>, loggedUserId: string) {
         if (data.day < 0 || data.day > 6) {
-            throw new InvalidParamError('Dia da semana inválido.');
+            throw new InvalidParamError('Invalid day of the week.');
         }
         
         if (!(hourFormatValidation(data.openingTime) && hourFormatValidation(data.closingTime))) {
-            throw new InvalidParamError('Formato de horário inválido. Utilize o formato HH:MM.');
+            throw new InvalidParamError('Invalid date format. Use the HH:MM(00 | 30) format.');
         }
 
         const dayConverted = parseInt(data.day.toString());
@@ -25,11 +25,11 @@ class OpeningHoursService {
         });
 
         if (!barbershop) {
-            throw new InvalidParamError(`Barbearia com id:${data.barbershopId} não encontrada.`);
+            throw new InvalidParamError(`Barbershop with id:${data.barbershopId} not found.`);
         }
         
         if (barbershop.ownerId !== loggedUserId) {
-            throw new PermissionError('Você não tem permissão para definir os horários de funcionamento para esta barbearia.');
+            throw new PermissionError('You do not have permission to set opening hours for this barbershop.');
         }
 
         const day = await Prisma.openingHours.findFirst({
@@ -40,7 +40,7 @@ class OpeningHoursService {
         });
 
         if (day) {
-            throw new ConflictError(`Já há um horário para ${weekDays[dayConverted]}`);
+            throw new ConflictError(`There's already an opening hour for ${weekDays[dayConverted]}`);
         }
 
         await Prisma.openingHours.create({
@@ -76,16 +76,16 @@ class OpeningHoursService {
         });
 
         if (!day) {
-            throw new InvalidParamError(`O dia com id ${openingHoursId} não foi encontrado.`);
+            throw new InvalidParamError(`The day with id ${openingHoursId} was not found.`);
         }
 
         if (!(data.closingTime !== undefined && hourFormatValidation(data.closingTime) 
               && data.openingTime !== undefined && hourFormatValidation(data.openingTime))) {
-            throw new InvalidParamError('Formato de horário inválido. Utilize o formato HH:MM.');
+            throw new InvalidParamError('Invalid date format. Use the HH:MM(00 | 30) format.');
         }
 
         if (day.barbershop.ownerId !== loggedUserId) {
-            throw new PermissionError('Você não tem permissão para definir os horários de funcionamento para esta barbearia.');
+            throw new PermissionError('You do not have permission to edit opening hours for this barbershop.');
         }
 
         await Prisma.openingHours.update({
@@ -111,11 +111,11 @@ class OpeningHoursService {
         });
 
         if (!day) {
-            throw new InvalidParamError(`O dia com id ${openingHoursId} não foi encontrado.`);
+            throw new InvalidParamError(`The day with id ${openingHoursId} was not found.`);
         }
         
         if (day.barbershop.ownerId !== loggedUserId) {
-            throw new PermissionError('Você não tem permissão para definir os horários de funcionamento para esta barbearia.');
+            throw new PermissionError('You do not have permission to delete opening hours for this barbershop');
         }
 
         await Prisma.openingHours.delete({

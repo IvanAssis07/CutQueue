@@ -7,7 +7,7 @@ import { ConflictError } from "../../../../errors/ConflictError";
 class AppointmentService {
     async create (data: Omit<Appointment, 'id' | 'canceled' | 'endTime'>, loggedUserId: string) {
         if (loggedUserId !== data.customerId) {
-            throw new PermissionError('Você não tem permissão para criar um agendamento para outro usuário.');
+            throw new PermissionError('You do not have permission to create an appointment for another user.');
         }
 
         const user = await Prisma.user.findUnique({
@@ -17,7 +17,7 @@ class AppointmentService {
         });
 
         if (!user) {
-            throw new InvalidParamError(`Usuário com id:${data.customerId} não encontrado.`);
+            throw new InvalidParamError(`User with id:${data.customerId} not found.`);
         }
 
         const service = await Prisma.service.findUnique({
@@ -30,7 +30,7 @@ class AppointmentService {
         });
 
         if (!service) {
-            throw new ConflictError(`Serviço com id:${data.serviceId} não encontrado.`);
+            throw new ConflictError(`Service with id:${data.serviceId} not found.`);
         }
         
         const durationInMilliseconds = service.duration.toNumber() * 60 * 1000;
@@ -50,7 +50,7 @@ class AppointmentService {
         });
         
         if (existingAppointments) {
-            throw new ConflictError('Já existe um agendamento para este horário.');
+            throw new ConflictError('There is already an appointment for this time.');
         } else {
             await Prisma.appointment.create({
                 data: {
@@ -84,11 +84,11 @@ class AppointmentService {
         });
 
         if (!appointment) {
-            throw new InvalidParamError(`Agendamento com id:${id} não encontrado.`);
+            throw new InvalidParamError(`Appointment with id:${id} not found.`);
         }
 
         if (loggedUserId !== appointment.customerId) {
-            throw new PermissionError('Você não tem permissão para visualizar este agendamento.');
+            throw new PermissionError('You do not have permission to view this appointment.');
         }
 
         return appointment;
@@ -120,11 +120,11 @@ class AppointmentService {
         });
 
         if (!appointment) {
-            throw new InvalidParamError(`Agendamento com id:${appointmentId} não encontrado.`);
+            throw new InvalidParamError(`Appointment with id:${appointmentId} not found.`);
         }
 
         if (loggedUserId !== appointment.customerId) {
-            throw new PermissionError('Você não tem permissão para cancelar este agendamento.');
+            throw new PermissionError('You do not have permission to cancel this appointment.');
         }
 
         await Prisma.appointment.update({

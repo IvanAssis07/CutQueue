@@ -50,13 +50,13 @@ export async function loginMiddleware(req: Request, res: Response, next: NextFun
         });
 
         if (!user) {
-            throw new NotAuthorizedError('E-mail e/ou senha incorretos!');
+            throw new NotAuthorizedError('Email or password incorrect!');
         }
 
         const matchingPassword = await compare(req.body.password, user.password);
       
         if (!matchingPassword) {
-            throw new NotAuthorizedError('E-mail e/ou senha incorretos!');
+            throw new NotAuthorizedError('Email or password incorrect!');
         }
 
         generateJWT(user, res);
@@ -75,7 +75,7 @@ export function notLoggedIn(req: Request, res: Response, next: NextFunction) {
             const decoded = verify(token, getEnv('SECRET_KEY'));
 
             if (decoded) {
-                throw new ConflictError('Você já está logado no sistema!');
+                throw new ConflictError('You are already logged in the system!');
             }
         }
 
@@ -95,7 +95,7 @@ export function verifyJWT(req: Request, res: Response, next: NextFunction) {
         }
 
         if (!req.user) {
-            throw new PermissionError('Você precisa estar logado para realizar essa ação!');
+            throw new PermissionError('You need to be logged to perform this action!');
         }
 
         next();
@@ -108,7 +108,7 @@ export const checkRole = (roles: string[]) => {
     return (req: Request, res: Response, next: NextFunction) => {
 
         try {
-            ! roles.includes(req.user!.role) ? res.status(statusCodes.UNAUTHORIZED).json('Você não possui permissão para realizar essa ação') : next();
+            ! roles.includes(req.user!.role) ? res.status(statusCodes.UNAUTHORIZED).json('You do not have permission to perform this action.') : next();
         } catch(error){
             next(error);
         }
