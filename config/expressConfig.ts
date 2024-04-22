@@ -25,3 +25,6 @@ app.use('/api/services', serviceRouter);
 
 import { router as openingHoursRouter } from '../src/domains/openingHours/controller';
 app.use('/api/openingHours', openingHoursRouter);
+
+import { router as appointmentRouter } from '../src/domains/appointment/controller';
+app.use('/api/appointments', appointmentRouter);
