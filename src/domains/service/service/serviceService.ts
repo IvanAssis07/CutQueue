@@ -6,7 +6,7 @@ import { generateJWT } from "../../../middlewares/auth";
 import { ConflictError } from "../../../../errors/ConflictError";
 
 class ServiceService {
-    async create(data: Omit<Service, 'id'>, ownerId: string) {
+    async create(data: Omit<Service, 'id'>, loggedUserId: string) {
         const barbershop = await Prisma.barbershop.findUnique({
             where: {
                 id: data.barbershopId
@@ -17,7 +17,7 @@ class ServiceService {
             throw new InvalidParamError(`Barbershop with id: ${data.barbershopId} not found.`);
         }
 
-        if (barbershop.ownerId !== ownerId) {
+        if (barbershop.ownerId !== loggedUserId) {
             throw new PermissionError('You do not have permission to create services for this barbershop.');
         }
 
