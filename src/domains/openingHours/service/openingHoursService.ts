@@ -124,8 +124,18 @@ class OpeningHoursService {
         if (!day) {
             throw new InvalidParamError(`The day with id ${openingHoursId} was not found.`);
         }
+
+        const barbershop = await Prisma.barbershop.findUnique({
+            where: {
+                id: day.barbershopId
+            }
+        });
+
+        if (!barbershop) {
+            throw new InvalidParamError(`Barbershop with id:${day.barbershopId} not found.`);
+        }
         
-        if (day.barbershop.ownerId !== loggedUserId) {
+        if (barbershop.ownerId !== loggedUserId) {
             throw new PermissionError('You do not have permission to delete opening hours for this barbershop');
         }
 
