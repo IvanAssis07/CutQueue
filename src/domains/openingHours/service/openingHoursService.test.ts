@@ -322,6 +322,113 @@ describe('Create OpeningHoursService method', function() {
         });
     });
 
+    test('Should throw an InvalidParamError if the opening does not exists', async () => {
+        const barbershop = {
+            id: 'test_barbershop_id',
+            ownerId: 'test_owner_id',
+            name: 'Test barbershop',
+            description: 'Test Description',
+            phone: '99999-9999',
+            address: 'Test address',
+        };
+
+        await prismaMock.barbershop.findUnique.mockResolvedValue(barbershop);
+
+        const openingHoursId = 'opening_hours_id'
+
+        const loggedUserId = barbershop.ownerId;
+
+         await expect(openingHoursService.deleteOpeningHours(openingHoursId, loggedUserId)).rejects.toThrow(InvalidParamError);
+    });
+
+    test('Should throw an InvalidParamError if the Barbershop does not exist', async () => {
+        const openingHoursId = 'opening_hours_id'
+
+        const existingOpeningHour = {
+        id: openingHoursId,
+        barbershopId: 'test_barbershop_id',
+        day: 0,
+        openingTime: '10:00',
+        closingTime: '18:00',
+        };
+
+
+        await prismaMock.openingHours.findFirst.mockResolvedValue(existingOpeningHour);
+
+        const loggedUserId = 'test_other_owner_id';
+
+         await expect(openingHoursService.deleteOpeningHours(openingHoursId, loggedUserId)).rejects.toThrow(InvalidParamError);
+    });
+
+
+    test('Should throw an PermissionError if the loggedUserId is not the owner', async () => {
+        const barbershop = {
+            id: 'test_barbershop_id',
+            ownerId: 'test_owner_id',
+            name: 'Test barbershop',
+            description: 'Test Description',
+            phone: '99999-9999',
+            address: 'Test address',
+        };
+
+        await prismaMock.barbershop.findUnique.mockResolvedValue(barbershop);
+
+        const openingHoursId = 'opening_hours_id'
+
+        const existingOpeningHour = {
+        id: openingHoursId,
+        barbershopId: barbershop.id,
+        day: 0,
+        openingTime: '10:00',
+        closingTime: '18:00',
+        };
+
+
+        await prismaMock.openingHours.findFirst.mockResolvedValue(existingOpeningHour);
+
+        const loggedUserId = 'test_other_owner_id';
+
+        await expect(openingHoursService.deleteOpeningHours(openingHoursId, loggedUserId)).rejects.toThrow(PermissionError);
+    });
+
+    test('Should delete the opening hours', async () => {
+        const barbershop = {
+            id: 'test_barbershop_id',
+            ownerId: 'test_owner_id',
+            name: 'Test barbershop',
+            description: 'Test Description',
+            phone: '99999-9999',
+            address: 'Test address',
+        };
+
+        await prismaMock.barbershop.findUnique.mockResolvedValue(barbershop);
+
+        const openingHoursId = 'opening_hours_id'
+
+        const existingOpeningHour = {
+        id: openingHoursId,
+        barbershopId: barbershop.id,
+        day: 0,
+        openingTime: '10:00',
+        closingTime: '18:00',
+        };
+
+
+        await prismaMock.openingHours.findFirst.mockResolvedValue(existingOpeningHour);
+
+        const loggedUserId = 'test_owner_id';
+
+        await expect(openingHoursService.deleteOpeningHours(openingHoursId, loggedUserId)).resolves.not.toThrow();
+
+        expect(prismaMock.openingHours.delete).toHaveBeenCalledWith({
+        where: {
+            id: openingHoursId
+        }
+        });
+    });
+
+
+
 
 
 
