@@ -84,7 +84,18 @@ class OpeningHoursService {
             throw new InvalidParamError('Invalid date format. Use the HH:MM(00 | 30) format.');
         }
 
-        if (day.barbershop.ownerId !== loggedUserId) {
+
+        const barbershop = await Prisma.barbershop.findUnique({
+            where: {
+                id: day.barbershopId
+            }
+        });
+
+        if (!barbershop) {
+            throw new InvalidParamError(`Barbershop with id:${day.barbershopId} not found.`);
+        }
+
+        if (barbershop.ownerId !== loggedUserId) {
             throw new PermissionError('You do not have permission to edit opening hours for this barbershop.');
         }
 
