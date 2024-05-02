@@ -138,12 +138,8 @@ class ServiceService {
             throw new InvalidParamError(`Service with id: ${serviceId} not found.`);
         }
 
-        if (!service.barbershop) {
-            throw new ConflictError(`Barbershop not found.`);
-        }
-
         if (service.barbershop.ownerId !== loggedUserId) {
-            throw new PermissionError('You do not have permission to edit this service.');
+            throw new PermissionError('You do not have permission to delete this service.');
         }
 
         await Prisma.service.delete({
