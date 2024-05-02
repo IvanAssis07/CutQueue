@@ -328,7 +328,7 @@ describe('Create OpeningHoursService method', function() {
         });
     });
 
-    describe('Tests for deleteOpeningHo method', function () {
+    describe('Tests for deleteOpeningHours method', function () {
         test('Should delete the opening hours', async () => {
             const barbershop = {
                 id: 'test_barbershop_id',
