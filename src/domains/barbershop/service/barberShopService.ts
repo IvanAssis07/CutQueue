@@ -4,6 +4,7 @@ import { InvalidParamError } from "../../../../errors/InvalidParamError";
 import { PermissionError } from "../../../../errors/PermissionError";
 import { roles } from '../../../../utils/constants/roles';
 import { ConflictError } from "../../../../errors/ConflictError";
+import { ForbiddenError } from "../../../../errors/ForbiddenError";
 
 class BarbershopService {
     async create(data: Omit<Barbershop, 'id'>, loggedUserId: string) {
@@ -22,7 +23,7 @@ class BarbershopService {
         }
 
         if (owner.role !== roles.OWNER) {
-            throw new ConflictError('A user with this role can not create a barbershop.');
+            throw new ForbiddenError('A user with this role can not create a barbershop.');
         }
 
         const barbershop = await Prisma.barbershop.findUnique({
@@ -50,11 +51,17 @@ class BarbershopService {
     }
 
     async getBarbershopFromOwnerId (ownerId: string) {
-        return await Prisma.barbershop.findFirstOrThrow({
+        const barbershop = await Prisma.barbershop.findFirst({
             where: {
                 ownerId: ownerId
             }
-        }).catch(() => { throw new InvalidParamError(`Barbershop with owner ${ownerId} not found.`) });
+        });
+
+        if (!barbershop) {
+            throw new InvalidParamError(`Barbershop with owner ${ownerId} not found.`);
+        }
+
+        return barbershop;
     }
 
     async getAll() {
