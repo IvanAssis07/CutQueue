@@ -7,7 +7,7 @@ import { ConflictError } from "../../../../errors/ConflictError";
 import e from "express";
 
 describe('Tests for create method', function() {
-    test('Should create a new user', async () => {
+    test('Should create a new service', async () => {
         const ownerId = 'test_owner_id';
 
         const data = {

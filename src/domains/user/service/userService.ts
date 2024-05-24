@@ -48,7 +48,7 @@ class UserService {
     }
 
     async getProfile(id: string) {
-        return Prisma.user.findUniqueOrThrow({
+        const user = Prisma.user.findUnique({
             where: {
                 id: id
             },
@@ -59,7 +59,13 @@ class UserService {
                 role: true,
                 phone: true
             }
-        }).catch(() => { throw new InvalidParamError(`User with ${id} not found.`) });
+        })
+
+        if (!user) {
+            throw new InvalidParamError(`User with ${id} not found.`) 
+        }
+
+        return user;
     }
 
     async update(data: Omit<User, 'role'| 'id'>, userId: string, loggedUserId: string) {

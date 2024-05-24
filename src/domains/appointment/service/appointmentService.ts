@@ -86,11 +86,7 @@ class AppointmentService {
         if (!appointment) {
             throw new InvalidParamError(`Appointment with id:${id} not found.`);
         }
-
-        if (loggedUserId !== appointment.customerId) {
-            throw new PermissionError('You do not have permission to view this appointment.');
-        }
-
+        
         return appointment;
     }
 
