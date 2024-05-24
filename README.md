@@ -21,7 +21,7 @@ Existem diversas rotas para atender este funcionamento, como a de cadastro de cl
 - Prisma studio;
 - Jest;
 
-# Para o desenvolvimento
+# Para o execução do projeto
 
 Será necessário seguir os seguintes passos para configurar e rodar o projeto:
 - Clonar o repo;
