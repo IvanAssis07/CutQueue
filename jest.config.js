@@ -3,7 +3,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   verbose: true,
-  collectCoverage: false,
+  collectCoverage: true,
   collectCoverageFrom: ['src/**/*Service.ts'],
   setupFilesAfterEnv: ['<rootDir>/config/singleton.ts'],
 };
