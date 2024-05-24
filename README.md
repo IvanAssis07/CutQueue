@@ -23,9 +23,7 @@ Existem diversas rotas para atender este funcionamento, como a de cadastro de cl
 
 # Para o desenvolvimento
 
-Já tem um teste pronto em src/domains/Service/Service. Deem uma olhada nele pra pegarem a estutura e na hora de criar testes criem na pasta service do domínio que estão testando.
-
-Será necessário seguir os seguintes passos:
+Será necessário seguir os seguintes passos para configurar e rodar o projeto:
 - Clonar o repo;
 - Instalar o node e npm na sua máquina;
 - Rodar npm install na raiz do projeto;
