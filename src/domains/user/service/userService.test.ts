@@ -1,14 +1,11 @@
 import { userService } from "./userService";
 import { prismaMock } from "../../../../config/singleton";
-import bcrypt from "bcrypt";
 import { InvalidParamError } from "../../../../errors/InvalidParamError";
 import { PermissionError } from "../../../../errors/PermissionError";
 import { ConflictError } from "../../../../errors/ConflictError";
 import { roles } from "../../../../utils/constants/roles";
 
-jest.mock('bcrypt', () => ({
-    hash: jest.fn().mockResolvedValue('hashedPassword')
-}));
+process.env.SALT_ROUNDS = '10';
 
 describe('Tests for create method', function () {
     test('shouldnt create user with email already registred', async () => {
