@@ -20,3 +20,7 @@ jobs:
           node-version: '20.x'
       - run: npm ci
       - run: npm test
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_ORG_TOKEN }}
