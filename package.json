@@ -7,7 +7,9 @@
     "build": "tsc",
     "dev": "npx nodemon index.ts",
     "compile": "npx tsc",
-    "test": "jest"
+    "test": "npm run test:unit",
+    "test:unit": "jest --config jest.unit.config.js",
+    "test:integration": "jest --config jest.integration.config.js"
   },
   "keywords": [],
   "author": "",
