@@ -6,4 +6,6 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: ['src/**/*Service.ts'],
   setupFilesAfterEnv: ['<rootDir>/config/singleton.ts'],
+  testMatch: ['**/?(*.)+(spec|test).unit.ts'],
 };
+

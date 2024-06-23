@@ -60,7 +60,6 @@ class UserService {
                 phone: true
             }
         })
-
         if (!user) {
             throw new InvalidParamError(`User with ${id} not found.`) 
         }
